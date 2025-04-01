@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu Divertissement et Téléchargement</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .container {
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .menu {
+      margin-bottom: 30px;
+    }
+    .menu h2 {
+      color: #333;
+    }
+    .menu ul {
+      padding: 0;
+      list-style-type: none;
+    }
+    .menu ul li {
+      margin-bottom: 10px;
+    }
+    .menu ul li a {
+      display: block;
+      padding: 10px;
+      background-color: #333;
+      color: white;
+      text-decoration: none;
+      text-align: center;
+      border-radius: 5px;
+    }
+    .menu ul li a:hover {
+      background-color: #555;
+    }
+    .file-input {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .video-list {
+      margin: 20px 0;
+      padding: 0;
+      list-style-type: none;
+    }
+    .video-item {
+      margin-bottom: 10px;
+    }
+    .video-item button {
+      padding: 10px;
+      width: 100%;
+      background-color: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+    }
+    .video-item button:hover {
+      background-color: #555;
+    }
+    video {
+      width: 100%;
+      margin-top: 20px;
+      border-radius: 8px;
+      background-color: #000;
+    }
+    .progress-container {
+      margin-top: 10px;
+      width: 100%;
+      background-color: #ddd;
+      height: 10px;
+      border-radius: 5px;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: #4caf50;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Menu Divertissement</h1>
+
+    <!-- Menu Divertissement -->
+    <div class="menu">
+      <h2>Liens vers des sites</h2>
+      <ul>
+        <li><a href="https://www.mycanal.fr" target="_blank">MyCanal</a></li>
+        <li><a href="https://www.plex.tv" target="_blank">Plex</a></li>
+        <li><a href="https://www.primevideo.com" target="_blank">Prime Video</a></li>
+        <li><a href="https://www.crunchyroll.com" target="_blank">Crunchyroll</a></li>
+      </ul>
+    </div>
+
+    <!-- Menu Jeux -->
+    <div class="menu">
+      <h2>Jeux</h2>
+      <ul>
+        <li><a href="https://classicube.net" target="_blank">Minecraft (Classicube.net)</a></li>
+        <li><a href="jeu-pong.html" target="_blank">Pong</a></li>
+        <li><a href="jeu-puissance4.html" target="_blank">Puissance 4</a></li>
+      </ul>
+    </div>
+
+    <!-- Menu Téléchargement de Vidéos -->
+    <div class="menu">
+      <h2>Téléchargement et Lecture de Vidéos</h2>
+
+      <!-- Section de téléchargement -->
+      <div class="file-input">
+        <input type="file" id="fileInput" accept="video/*" multiple>
+      </div>
+      
+      <!-- Liste des vidéos téléchargées -->
+      <ul id="videoList" class="video-list"></ul>
+
+      <!-- Lecteur vidéo -->
+      <video id="videoPlayer" controls></video>
+
+      <!-- Jauge de progression -->
+      <div class="progress-container">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sélectionne les éléments du DOM
+    const fileInput = document.getElementById('fileInput');
+    const videoList = document.getElementById('videoList');
+    const videoPlayer = document.getElementById('videoPlayer');
+    const progressBar = document.getElementById('progressBar');
+
+    // Tableau pour stocker les fichiers vidéo téléchargés
+    let videos = [];
+
+    // Fonction pour gérer l'ajout des vidéos téléchargées à la liste
+    fileInput.addEventListener('change', function(event) {
+      const files = event.target.files;
+      
+      // Parcours des fichiers téléchargés
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fileURL = URL.createObjectURL(file);
+        
+        // Ajouter le fichier à la liste des vidéos
+        videos.push({ name: file.name, url: fileURL });
+        
+        // Créer un élément de liste pour chaque vidéo
+        const listItem = document.createElement('li');
+        listItem.classList.add('video-item');
+        const button = document.createElement('button');
+        button.textContent = `Lire: ${file.name}`;
+        button.onclick = () => playVideo(fileURL);
+        listItem.appendChild(button);
+        videoList.appendChild(listItem);
+      }
+    });
+
+    // Fonction pour lire la vidéo sélectionnée
+    function playVideo(fileURL) {
+      videoPlayer.src = fileURL;
+      videoPlayer.play();
+    }
+
+    // Fonction pour mettre à jour la jauge de progression pendant la lecture
+    videoPlayer.addEventListener('timeupdate', function() {
+      const progress = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+      progressBar.style.width = progress + '%';
+    });
+
+    // Fonction pour gérer la fin de la vidéo (réinitialisation de la jauge)
+    videoPlayer.addEventListener('ended', function() {
+      progressBar.style.width = '0%';
+    });
+  </script>
+
+</body>
+</html>
